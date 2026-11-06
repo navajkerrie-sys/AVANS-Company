@@ -310,9 +310,10 @@ sync();
   </div>
 </div>
 
+<script src="config.js"></script>
 <script>
 // === AVANS BRAIN - PUT YOUR GROQ KEY HERE ===
-const GROQ_API_KEY = "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"; 
+const GROQ_API_KEY = window.AVANS_CONFIG?.GROQ_KEY||""; 
 const GROQ_MODEL = "openai/gpt-oss-120b";
 
 const AVANS_PROMPT = `
