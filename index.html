@@ -310,7 +310,6 @@ sync();
   </div>
 </div>
 
-<script src="config.js"></script>
 <script>
 // === AVANS BRAIN - NO GROQ KEY, LOCAL SCRIPT ONLY ===
 const AVANS_INFO = {
@@ -325,7 +324,7 @@ function getAvansReply(q){
 
   // Greetings
   if(/^(hi|hey|hello|yo|sasa|niaje|morning|afternoon|evening)/.test(m) || m.includes("habari") || m.includes("mambo")){
-    return `Sasa boss! Welcome to AVANS — Identity, Engineered. 🔥<br>What do you want today?<br><b>1.</b> Branding / Clothes<br><b>2.</b> Website<br><br>Reply with 1 or 2, or just type product name.`;
+    return `Hello boss! Welcome to AVANS — Identity, Engineered. 🔥<br>What do you want today?<br><b>1.</b> Branding / Clothes<br><b>2.</b> Website<br><br>Reply with 1 or 2, or just type product name.`;
   }
 
   // PRICE LIST
