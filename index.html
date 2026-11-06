@@ -324,7 +324,7 @@ function getAvansReply(q){
 
   // Greetings
   if(/^(hi|hey|hello|yo|sasa|niaje|morning|afternoon|evening)/.test(m) || m.includes("habari") || m.includes("mambo")){
-    return `Hello boss! Welcome to AVANS — Identity, Engineered. 🔥<br>What do you want today?<br><b>1.</b> Branding / Clothes<br><b>2.</b> Website<br><br>Reply with 1 or 2, or just type product name.`;
+    return `Hello boss! Welcome to AVANS — Identity, Engineered. <br>What do you want today?<br><b>1.</b> Branding / Clothes<br><b>2.</b> Website<br><br>Reply with 1 or 2, or just type product name.`;
   }
 
   // PRICE LIST
@@ -376,7 +376,7 @@ function getAvansReply(q){
 
   // CONTACT / CEO
   if(m.includes("ceo") || m.includes("contact") || m.includes("number") || m.includes("call") || m.includes("whatsapp")){
-    return `CEO direct: <b>+254726947055</b><br>IG: <b>@avans.branding.company</b><br>Pickup: Nakuru Town + countrywide delivery.`;
+    return `CEO direct: <b>+254726947055</b><br>IG: <b>navajkerrie@gmail.com</b><br>Pickup: Nakuru Town + countrywide delivery.`;
   }
 
   // ORDER INTENT - 1
@@ -386,7 +386,7 @@ function getAvansReply(q){
 
   // ORDER DETECTION - size / color in message
   if(/(s|m|l|xl|2xl|black|white|grey|cream|olive)/.test(m) && m.length > 2){
-    return `Nice pick boss! 🔥 Noted: "${q}"<br>Confirm your name + delivery location + phone, and I’ll lock your order. Delivery Nakuru FREE. Till 123456. CEO +254726947055`;
+    return `Nice pick boss!  Noted: "${q}"<br>Confirm your name + delivery location + phone, and I’ll lock your order. Delivery Nakuru FREE. Till 123456. CEO +254726947055`;
   }
 
   // FALLBACK
