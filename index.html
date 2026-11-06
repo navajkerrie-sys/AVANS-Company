@@ -312,63 +312,122 @@ sync();
 
 <script src="config.js"></script>
 <script>
-// === AVANS BRAIN - PUT YOUR GROQ KEY HERE ===
-const GROQ_API_KEY = window.AVANS_CONFIG?.GROQ_KEY||""; 
-const GROQ_MODEL = "openai/gpt-oss-120b";
+// === AVANS BRAIN - NO GROQ KEY, LOCAL SCRIPT ONLY ===
+const AVANS_INFO = {
+  phone: "+254726947055",
+  ig: "@avans.branding.company",
+  slogan: "Identity, Engineered.",
+  till: "123456"
+};
 
-const AVANS_PROMPT = `
-You are OFFICIAL Agent for AVANS BRANDING COMPANY. Slogan: "Identity, Engineered."
-INFO: Nakuru Town pickup + countrywide delivery. IG @avans.branding.company CEO +254726947055.
-CLOTHING: T-shirts 1500, Hoodies 2800, Sweatpants 2500, Caps 1200, Balaclava 1000, Jerseys 1500-1800. Sizes S-2XL. Colors Black White Grey Cream Olive.
-WEB DEV: Landing 8k (3-5d), Portfolio 10k (5-7d), Blog 12k (5-7d), Business 15k (5-7d), Booking 25k (7-14d), E-commerce 35k (7-14d). Hosting 3500/yr. Deposit 25%.
-Delivery: Nakuru FREE today/tomorrow, outskirts 150, Nairobi 250 (1-2d), rest 350 (2-3d). Branding = pay on delivery. Till: 123456
-RULES: Premium tone, short 1-3 lines. You are Agent from AVANS, not AI.
-`;
+function getAvansReply(q){
+  const m = q.toLowerCase().trim();
 
-let chatHistory = [{ role: "system", content: AVANS_PROMPT }];
-
-async function askAvansBrain(message) {
-  const box = document.getElementById('avans-chat-messages');
-  if(!box) return;
-  chatHistory.push({ role: "user", content: message });
-  if(chatHistory.length > 13) chatHistory.splice(1, chatHistory.length - 13);
-  box.innerHTML += `<div class="msg bot typing">AVANS is typing...</div>`;
-  box.scrollTop = box.scrollHeight;
-  try {
-    let r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: { "Authorization": "Bearer " + GROQ_API_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: GROQ_MODEL, messages: chatHistory, temperature: 0.7, max_tokens: 400 })
-    });
-    let d = await r.json();
-    let ans = d.choices?.[0]?.message?.content || "Network slow boss, repeat? CEO: +254726947055";
-    chatHistory.push({ role: "assistant", content: ans });
-    document.querySelector('.typing')?.remove();
-    box.innerHTML += `<div class="msg bot">${ans}</div>`;
-    box.scrollTop = box.scrollHeight;
-  } catch (e) {
-    document.querySelector('.typing')?.remove();
-    box.innerHTML += `<div class="msg bot">Network slow boss, repeat that? CEO direct: +254726947055</div>`;
+  // Greetings
+  if(/^(hi|hey|hello|yo|sasa|niaje|morning|afternoon|evening)/.test(m) || m.includes("habari") || m.includes("mambo")){
+    return `Sasa boss! Welcome to AVANS — Identity, Engineered. 🔥<br>What do you want today?<br><b>1.</b> Branding / Clothes<br><b>2.</b> Website<br><br>Reply with 1 or 2, or just type product name.`;
   }
+
+  // PRICE LIST
+  if(m.includes("price") || m.includes("bei") || m.includes("cost") || m.includes("how much") || m.includes("list") || m.includes("menu")){
+    return `AVANS Price List:<br><b>Branding:</b> T-shirt 1500, Hoodie 2800, Sweatpants 2500, Cap 1200, Balaclava 1000, Jersey 1500-1800<br><b>Web:</b> Landing 8k, Portfolio 10k, Blog 12k, Business 15k, Booking 25k, E-commerce 35k<br>Sizes S-2XL. Colors: Black, White, Grey, Cream, Olive.<br>Tell me product + size + color to order.`;
+  }
+
+  // CLOTHING SPECIFIC
+  if(m.includes("t-shirt") || m.includes("tshirt") || m.includes("tee")){
+    return `T-shirt — <b>Ksh 1,500</b>. Sizes S-2XL. Colors: Black, White, Grey, Cream, Olive.<br>Which size + color do you want? I’ll confirm delivery.`;
+  }
+  if(m.includes("hoodie")){
+    return `Hoodie — <b>Ksh 2,800</b>. Sizes S-2XL. Colors: Black, White, Grey, Cream, Olive.<br>Which size + color? Nakuru delivery is FREE.`;
+  }
+  if(m.includes("sweat") || m.includes("jogger") || m.includes("pant")){
+    return `Sweatpants — <b>Ksh 2,500</b>. Sizes S-2XL. Colors: Black, Grey, Olive, Cream.<br>What size + color?`;
+  }
+  if(m.includes("cap")){
+    return `Cap — <b>Ksh 1,200</b>. Colors: Black, White, Olive, Cream.<br>Which color do you want?`;
+  }
+  if(m.includes("balaclava") || m.includes("mask")){
+    return `Balaclava — <b>Ksh 1,000</b>. Colors: Black, White, Grey.<br>Which color?`;
+  }
+  if(m.includes("jersey")){
+    return `Jersey — <b>Ksh 1,500 - 1,800</b> depending on design. Sizes S-2XL.<br>Do you want plain or custom name/number?`;
+  }
+
+  // WEB DEV
+  if(m.includes("web") || m.includes("website") || m.includes("site") || m === "2"){
+    return `Web Dev — AVANS:<br>Landing 8k (3-5d), Portfolio 10k, Blog 12k, Business 15k, Booking 25k, E-commerce 35k (7-14d).<br>Hosting 3500/yr. Deposit 25%.<br>What’s your business name + budget + deadline?`;
+  }
+  if(m.includes("landing")) return `Landing Page — <b>Ksh 8,000</b>, 3-5 days. Perfect for business launch. What business is it for?`;
+  if(m.includes("portfolio")) return `Portfolio — <b>Ksh 10,000</b>, 5-7 days. Show your work in style. What do you do?`;
+  if(m.includes("blog")) return `Blog Website — <b>Ksh 12,000</b>, 5-7 days. What will you blog about?`;
+  if(m.includes("business") && (m.includes("web") || m.includes("15"))) return `Business Website — <b>Ksh 15,000</b>, 5-7 days. Company profile + services + contact. What’s your business name?`;
+  if(m.includes("booking")) return `Booking Website — <b>Ksh 25,000</b>, 7-14 days. Customers can book online. What do you book?`;
+  if(m.includes("ecommerce") || m.includes("e-commerce") || m.includes("shop") || m.includes("online store")) return `E-commerce — <b>Ksh 35,000</b>, 7-14 days. Full online shop + M-Pesa + delivery. What products will you sell?`;
+  if(m.includes("hosting")) return `Hosting — <b>Ksh 3,500/year</b>. We handle setup + domain. Want us to host for you?`;
+
+  // DELIVERY
+  if(m.includes("deliver") || m.includes("delivery") || m.includes("shipping") || m.includes("nakuru") || m.includes("nairobi")){
+    return `Delivery: Nakuru Town <b>FREE</b> today/tomorrow. Outskirts 150, Nairobi 250 (1-2d), Rest of Kenya 350 (2-3d).<br>Branding = Pay on Delivery.<br>Where should we deliver?`;
+  }
+
+  // PAYMENT
+  if(m.includes("pay") || m.includes("till") || m.includes("mpesa") || m.includes("deposit")){
+    return `Payment: Till <b>123456</b>. Web = 25% deposit to start. Branding = Pay on Delivery.<br>Tell me what you’re ordering and I’ll confirm total.`;
+  }
+
+  // CONTACT / CEO
+  if(m.includes("ceo") || m.includes("contact") || m.includes("number") || m.includes("call") || m.includes("whatsapp")){
+    return `CEO direct: <b>+254726947055</b><br>IG: <b>@avans.branding.company</b><br>Pickup: Nakuru Town + countrywide delivery.`;
+  }
+
+  // ORDER INTENT - 1
+  if(m === "1" || m.includes("brand") || m.includes("cloth")){
+    return `Branding — T-shirt 1500, Hoodie 2800, Sweatpants 2500, Cap 1200, Balaclava 1000, Jersey 1500-1800.<br>Tell me: Product + Size + Color. Example: Hoodie L Black`;
+  }
+
+  // ORDER DETECTION - size / color in message
+  if(/(s|m|l|xl|2xl|black|white|grey|cream|olive)/.test(m) && m.length > 2){
+    return `Nice pick boss! 🔥 Noted: "${q}"<br>Confirm your name + delivery location + phone, and I’ll lock your order. Delivery Nakuru FREE. Till 123456. CEO +254726947055`;
+  }
+
+  // FALLBACK
+  return `Got you boss! AVANS — Identity, Engineered.<br><b>Branding:</b> T-shirts 1500, Hoodies 2800, Caps 1200<br><b>Web:</b> 8k-35k<br><b>Delivery:</b> Nakuru FREE<br>Tell me product + size, or type "web" for websites. CEO +254726947055`;
 }
+
+let avansTyping = false;
 
 function sendAvans(){
   const input = document.getElementById('avans-input');
   const box = document.getElementById('avans-chat-messages');
-  if(!input || !box || !input.value.trim()) return;
-  box.innerHTML += `<div class="msg user">${input.value}</div>`;
-  let q = input.value; input.value = '';
-  // If no key, fallback to simple brain so it NEVER shows [object Promise]
-  if(GROQ_API_KEY.includes("YOUR_KEY")) {
-    let fallback = "Branding: T-shirts 1500, Hoodies 2800, Caps 1200 | Web: 8k-35k | Delivery Nakuru FREE. Tell me product + size. CEO +254726947055";
-    if(q.toLowerCase().includes("web")) fallback = "Web Dev: Landing 8k, Portfolio 10k, Blog 12k, Business 15k, Booking 25k, E-commerce 35k. What's your business name, budget, deadline?";
-    box.innerHTML += `<div class="msg bot">${fallback}</div>`;
-  } else {
-    askAvansBrain(q);
-  }
+  if(!input || !box || !input.value.trim() || avansTyping) return;
+  const q = input.value.trim();
+  box.innerHTML += `<div class="msg user">${q}</div>`;
+  input.value = '';
   box.scrollTop = box.scrollHeight;
+
+  // Typing effect like AI
+  avansTyping = true;
+  box.innerHTML += `<div class="msg bot typing">AVANS is typing...</div>`;
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(()=>{
+    document.querySelector('.typing')?.remove();
+    const ans = getAvansReply(q);
+    box.innerHTML += `<div class="msg bot">${ans}</div>`;
+    box.scrollTop = box.scrollHeight;
+    avansTyping = false;
+  }, 600);
 }
-function askAvans(q){ document.getElementById('avans-input').value=q; sendAvans(); }
+
+function askAvans(q){ 
+  const inp = document.getElementById('avans-input');
+  if(inp){ inp.value = q; sendAvans(); }
+}
+
+// Enter key to send
+document.getElementById('avans-input')?.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){ e.preventDefault(); sendAvans(); }
+});
 
 // open/close
 document.getElementById('avans-chat-btn').onclick = () => {
@@ -376,7 +435,6 @@ document.getElementById('avans-chat-btn').onclick = () => {
   b.style.display = b.style.display==='none' || !b.style.display ? 'flex' : 'none';
 }
 document.getElementById('avans-close').onclick = () => document.getElementById('avans-chat-box').style.display='none';
-
 </script>
 <style>
  #avans-chat-btn {
